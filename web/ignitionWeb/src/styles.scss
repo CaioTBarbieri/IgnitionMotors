@@ -1,0 +1,76 @@
+
+/* ============================================
+   IgnitionMotors — Design System
+   ============================================ */
+:root {
+  /* Cores base */
+  --bg: #121214;
+  --bg-soft: #18181b;
+  --surface: #1c1c20;
+  --surface-2: #26262c;
+  --border: #2e2e35;
+  --border-soft: #232328;
+
+  /* Texto */
+  --text-strong: #f4f4f6;
+  --text: #cfcfd6;
+  --text-muted: #8d8d99;
+
+  /* Acento (laranja da marca) */
+  --accent: #f97316;
+  --accent-hover: #ea580c;
+  --accent-soft: rgba(249, 115, 22, 0.18);
+  --accent-glow: rgba(249, 115, 22, 0.35);
+
+  /* Gradiente de marca */
+  --gradient-brand: linear-gradient(135deg, #fb923c 0%, #f97316 55%, #ea580c 100%);
+  --gradient-surface: linear-gradient(160deg, #1d1d22 0%, #16161a 100%);
+
+  /* Tipografia */
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Outfit', 'Inter', sans-serif;
+
+  /* Raios */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+
+  /* Sombras */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.45);
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: var(--bg);
+  color: var(--text);
+  height: 100%;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--text-strong);
+}
+
+/* Scrollbar refinada */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: var(--surface-2);
+  border-radius: 10px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }

@@ -1,0 +1,75 @@
+<div class="dashboard-container">
+
+  <header class="navbar">
+    <div class="logo">
+      <h1>Ignition<span>Motors</span></h1>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-primary" routerLink="/add-car">+ Anunciar Máquina</button>
+
+      <div class="profile-menu" (click)="$event.stopPropagation()">
+        <button
+          type="button"
+          class="profile-trigger"
+          [class.active]="profileMenuOpen"
+          (click)="toggleProfileMenu()"
+          aria-label="Abrir menu do perfil"
+          [attr.aria-expanded]="profileMenuOpen"
+        >
+          <span class="avatar">{{ userInitial }}</span>
+          <span class="profile-label">Perfil</span>
+        </button>
+
+        <div class="profile-dropdown" *ngIf="profileMenuOpen">
+          <button type="button" routerLink="/profile" (click)="closeProfileMenu()">Meu perfil</button>
+          <button type="button" (click)="logout()">Sair</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <h2>Vitrine de Veículos</h2>
+      <p>Confira o estoque atualizado em tempo real.</p>
+
+      <div class="search-area">
+        <input type="text" placeholder="Pesquise por marca ou modelo..." (input)="onSearch($event)">
+      </div>
+    </div>
+  </section>
+
+  <main class="content">
+
+    <div class="empty-state" *ngIf="filteredCars.length === 0">
+      <p>Nenhum veículo encontrado.</p>
+      <span>Tente buscar por outra marca ou modelo.</span>
+    </div>
+
+    <div class="car-grid" *ngIf="filteredCars.length > 0">
+      <div class="car-card" *ngFor="let car of filteredCars" [routerLink]="['/car', car.id]">
+
+        <div class="car-image">
+         <img *ngIf="car.imageUrls && car.imageUrls.length > 0" [src]="car.imageUrls[0]" [alt]="car.model" class="vehicle-photo">
+         <span *ngIf="!car.imageUrls || car.imageUrls.length === 0">{{ car.brand }}</span>
+        </div>
+
+        <div class="car-info">
+          <h3>{{ car.brand }} {{ car.model }}</h3>
+          <p class="year">{{ car.year }}</p>
+          <p class="price">{{ car.price | currency:'BRL':'symbol':'1.0-0' }}</p>
+
+          <div class="specs">
+            <span class="spec-badge">⚙️ {{ car.engine }}</span>
+            <span class="spec-badge">🐎 {{ car.horsepower }} cv</span>
+            <span class="spec-badge">🛣️ {{ car.km | number }} km</span>
+            <span class="spec-badge">⏱️ 0-100: {{ car.zeroToHundred }}s</span>
+          </div>
+
+          <button class="btn-details" [routerLink]="['/car', car.id]" (click)="$event.stopPropagation()">Saber mais →</button>
+
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

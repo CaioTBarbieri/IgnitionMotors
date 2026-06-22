@@ -1,0 +1,7 @@
+web/ignitionWeb/node_modules/
+web/ignitionWeb/.angular/
+web/ignitionWeb/dist/
+api/target/
+.idea/
+api/.idea/
+*.iml

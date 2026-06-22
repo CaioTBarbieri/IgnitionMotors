@@ -1,0 +1,103 @@
+<div class="page-layout">
+  <header class="navbar">
+    <div class="logo">
+      <h1 routerLink="/dashboard" style="cursor: pointer;">Ignition<span>Motors</span></h1>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-primary" routerLink="/dashboard">Voltar a Vitrine</button>
+
+      <div class="profile-menu" (click)="$event.stopPropagation()">
+        <button
+          type="button"
+          class="profile-trigger"
+          [class.active]="profileMenuOpen"
+          (click)="toggleProfileMenu()"
+          aria-label="Abrir menu do perfil"
+          [attr.aria-expanded]="profileMenuOpen"
+        >
+          <span class="avatar">{{ userInitial }}</span>
+          <span class="profile-label">Perfil</span>
+        </button>
+
+        <div class="profile-dropdown" *ngIf="profileMenuOpen">
+          <button type="button" routerLink="/profile" (click)="closeProfileMenu()">Meu perfil</button>
+          <button type="button" (click)="logout()">Sair</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="add-car-container">
+    <div class="form-card">
+      <div class="header-area">
+        <h2>{{ isEditMode ? 'Editar Anuncio' : 'Anunciar Nova Maquina' }}</h2>
+        <p>{{ isEditMode ? 'Atualize os dados do veiculo anunciado.' : 'Preencha os dados tecnicos do veiculo.' }}</p>
+      </div>
+
+      <form [formGroup]="carForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="input-group">
+            <label>Marca</label>
+            <input type="text" formControlName="brand" placeholder="Ex: Porsche">
+          </div>
+          <div class="input-group">
+            <label>Modelo</label>
+            <input type="text" formControlName="model" placeholder="Ex: 911 GT3">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="input-group">
+            <label>Ano</label>
+            <input type="number" formControlName="year" placeholder="Ex: 2024">
+          </div>
+          <div class="input-group">
+            <label>Preco (R$)</label>
+            <input type="number" formControlName="price" placeholder="Ex: 1500000">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Imagens do Veiculo (Selecione uma ou mais fotos do PC)</label>
+
+          <div class="file-upload-wrapper">
+            <span class="file-name-display" [ngClass]="{'has-file': selectedFileNames !== 'Nenhum arquivo selecionado'}">
+              {{ selectedFileNames }}
+            </span>
+
+            <label for="carImages" class="btn-browse">Procurar...</label>
+
+            <input type="file" id="carImages" (change)="onFileSelected($event)" accept="image/*" multiple class="hidden-file-input">
+          </div>
+        </div>
+
+        <h3 class="section-title">Performance</h3>
+
+        <div class="input-group">
+          <label>Motorizacao</label>
+          <input type="text" formControlName="engine" placeholder="Ex: 4.0 Flat-6 Aspirado">
+        </div>
+
+        <div class="form-row">
+          <div class="input-group">
+            <label>Cavalaria (cv)</label>
+            <input type="number" formControlName="horsepower" placeholder="Ex: 510">
+          </div>
+          <div class="input-group">
+            <label>Quilometragem (km)</label>
+            <input type="number" formControlName="km" placeholder="Ex: 15000">
+          </div>
+          <div class="input-group">
+            <label>0 a 100 km/h (s)</label>
+            <input type="number" step="0.1" formControlName="zeroToHundred" placeholder="Ex: 3.4">
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button type="button" class="btn-cancel" [routerLink]="isEditMode && editingCarId ? ['/car', editingCarId] : ['/dashboard']">Cancelar</button>
+          <button type="submit" class="btn-submit" [disabled]="carForm.invalid">{{ isEditMode ? 'Atualizar Anuncio' : 'Salvar Anuncio' }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

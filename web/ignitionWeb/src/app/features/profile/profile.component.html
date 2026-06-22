@@ -1,0 +1,100 @@
+<div class="profile-page">
+  <header class="navbar">
+    <div class="logo">
+      <h1 routerLink="/dashboard">Ignition<span>Motors</span></h1>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-primary" routerLink="/dashboard">Voltar a Vitrine</button>
+
+      <div class="profile-menu" (click)="$event.stopPropagation()">
+        <button
+          type="button"
+          class="profile-trigger"
+          [class.active]="profileMenuOpen"
+          (click)="toggleProfileMenu()"
+          aria-label="Abrir menu do perfil"
+          [attr.aria-expanded]="profileMenuOpen"
+        >
+          <span class="avatar">{{ userInitial }}</span>
+          <span class="profile-label">Perfil</span>
+        </button>
+
+        <div class="profile-dropdown" *ngIf="profileMenuOpen">
+          <button type="button" routerLink="/profile" (click)="closeProfileMenu()">Meu perfil</button>
+          <button type="button" (click)="logout()">Sair</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="profile-content">
+    <section class="profile-card">
+      <div class="profile-avatar">{{ userInitial }}</div>
+      <div>
+        <p class="eyebrow">Meu perfil</p>
+        <h2>{{ profileTitle }}</h2>
+        <p class="description">{{ profileSubtitle }}</p>
+      </div>
+
+      <div class="profile-details">
+        <div>
+          <span>Status</span>
+          <strong>Ativo</strong>
+        </div>
+        <div>
+          <span>Nome</span>
+          <strong>{{ user?.name || '-' }}</strong>
+        </div>
+        <div>
+          <span>Email</span>
+          <strong>{{ user?.email || '-' }}</strong>
+        </div>
+        <div>
+          <span>Tipo de conta</span>
+          <strong>{{ user?.role || '-' }}</strong>
+        </div>
+        <div>
+          <span>Anuncios</span>
+          <strong>{{ myCars.length }}</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="posts-section">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Minhas postagens</p>
+          <h2>Seus anuncios</h2>
+        </div>
+        <button type="button" class="btn-primary" routerLink="/add-car">Novo anuncio</button>
+      </div>
+
+      <p class="loading-state" *ngIf="loadingCars">Carregando seus anuncios...</p>
+
+      <div class="empty-posts" *ngIf="!loadingCars && myCars.length === 0">
+        <strong>Nenhum anuncio publicado ainda.</strong>
+        <span>Quando voce cadastrar um veiculo, ele aparece aqui.</span>
+      </div>
+
+      <div class="posts-grid" *ngIf="!loadingCars && myCars.length > 0">
+        <article class="post-card" *ngFor="let car of myCars">
+          <div class="post-image">
+            <img *ngIf="car.imageUrls && car.imageUrls.length > 0" [src]="car.imageUrls[0]" [alt]="car.model">
+            <span *ngIf="!car.imageUrls || car.imageUrls.length === 0">{{ car.brand }}</span>
+          </div>
+
+          <div class="post-body">
+            <h3>{{ car.brand }} {{ car.model }}</h3>
+            <p>{{ car.year }} • {{ car.km | number }} km</p>
+            <strong>{{ car.price | currency:'BRL':'symbol':'1.2-2' }}</strong>
+          </div>
+
+          <div class="post-actions">
+            <button type="button" class="btn-outline" [routerLink]="['/car', car.id]">Ver</button>
+            <button type="button" class="btn-primary" [routerLink]="['/edit-car', car.id]">Editar</button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+</div>

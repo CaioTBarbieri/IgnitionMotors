@@ -1,0 +1,70 @@
+<div class="auth-screen">
+
+  <div class="brand-panel">
+    <div class="brand-glow"></div>
+    <div class="brand-content">
+      <h1 class="brand-logo">Ignition<span>Motors</span></h1>
+      <p class="brand-tagline">O marketplace de máquinas de alta performance.</p>
+
+      <ul class="brand-highlights">
+        <li><span class="dot"></span> Anuncie sua máquina em minutos</li>
+        <li><span class="dot"></span> Ficha técnica completa e verificada</li>
+        <li><span class="dot"></span> Conecte-se direto com o comprador</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="form-panel">
+    <div class="login-card">
+      <div class="logo-area mobile-only">
+        <h1>Ignite<span>Motors</span></h1>
+        <p>Crie sua conta</p>
+      </div>
+
+      <div class="card-heading">
+        <h2>Crie sua conta</h2>
+        <p>Comece a anunciar suas máquinas hoje.</p>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+        <div class="input-group">
+          <label for="name">Nome Completo</label>
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="Seu nome"
+          >
+        </div>
+
+        <div class="input-group">
+          <label for="email">E-mail</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="seu@email.com"
+          >
+        </div>
+
+        <div class="input-group">
+          <label for="password">Senha</label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            placeholder="••••••••"
+          >
+        </div>
+
+        <button type="submit" [disabled]="registerForm.invalid">Cadastrar</button>
+      </form>
+
+      <div class="register-link">
+        <p>Já tem uma conta? <a routerLink="/login">Faça Login</a></p>
+      </div>
+    </div>
+  </div>
+
+</div>

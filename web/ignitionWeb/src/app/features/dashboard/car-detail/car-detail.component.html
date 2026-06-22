@@ -1,0 +1,72 @@
+<div class="detail-container" *ngIf="car">
+  <div class="header-actions">
+    <button class="btn-back" routerLink="/dashboard">
+      <span class="arrow">&larr;</span> Voltar para a Vitrine
+    </button>
+  </div>
+
+  <div class="detail-content">
+    <div class="image-section">
+      <div class="carousel-container" *ngIf="car.imageUrls && car.imageUrls.length > 0">
+        <button class="carousel-btn prev" (click)="prevImage()" *ngIf="car.imageUrls.length > 1">&lsaquo;</button>
+
+        <img [src]="car.imageUrls[currentIndex]" [alt]="car.model" class="main-image animate-fade">
+
+        <button class="carousel-btn next" (click)="nextImage()" *ngIf="car.imageUrls.length > 1">&rsaquo;</button>
+
+        <div class="carousel-dots" *ngIf="car.imageUrls.length > 1">
+          <span
+            *ngFor="let img of car.imageUrls; let i = index"
+            [class.active]="i === currentIndex"
+            (click)="setIndex(i)">
+          </span>
+        </div>
+      </div>
+
+      <div class="placeholder-image" *ngIf="!car.imageUrls || car.imageUrls.length === 0">
+        <span>{{ car.brand }}</span>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <div class="title-area">
+        <h1>{{ car.brand }} {{ car.model }}</h1>
+        <p class="year">Ano de Fabricacao: {{ car.year }}</p>
+      </div>
+
+      <div class="owner-actions" *ngIf="car.ownedByCurrentUser">
+        <button type="button" class="btn-edit" [routerLink]="['/edit-car', car.id]">Editar</button>
+        <button type="button" class="btn-delete" (click)="deleteCar()">Excluir</button>
+      </div>
+
+      <h2 class="price">{{ car.price | currency:'BRL':'symbol':'1.2-2' }}</h2>
+      <div class="divider"></div>
+
+      <h3>Ficha Tecnica</h3>
+      <div class="specs-grid">
+        <div class="spec-item">
+          <span class="icon">M</span>
+          <div class="spec-text"><p class="label">Motorizacao</p><p class="value">{{ car.engine }}</p></div>
+        </div>
+        <div class="spec-item">
+          <span class="icon">CV</span>
+          <div class="spec-text"><p class="label">Potencia</p><p class="value">{{ car.horsepower }} cv</p></div>
+        </div>
+        <div class="spec-item">
+          <span class="icon">KM</span>
+          <div class="spec-text"><p class="label">Quilometragem</p><p class="value">{{ car.km | number }} km</p></div>
+        </div>
+        <div class="spec-item">
+          <span class="icon">0-100</span>
+          <div class="spec-text"><p class="label">0 a 100 km/h</p><p class="value">{{ car.zeroToHundred }} s</p></div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="seller-card">
+        <div class="seller-info"><p>Veiculo anunciado por:</p><h4>{{ car.sellerName }}</h4></div>
+        <button class="btn-contact">Entrar em Contato</button>
+      </div>
+    </div>
+  </div>
+</div>
