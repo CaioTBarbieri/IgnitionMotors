@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CarService } from '../../core/services/car.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -7,7 +8,7 @@ import { AuthService } from '../../core/services/auth.service';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
@@ -15,12 +16,22 @@ export class ProfileComponent implements OnInit {
   private router = inject(Router);
   private carService = inject(CarService);
   private authService = inject(AuthService);
+  private fb = inject(FormBuilder);
 
   profileMenuOpen = false;
   myCars: any[] = [];
   user: any = null;
   loadingCars = true;
   loadingUser = true;
+  changingPassword = false;
+  passwordSuccess = '';
+  passwordError = '';
+
+  passwordForm = this.fb.group({
+    currentPassword: ['', Validators.required],
+    newPassword: ['', [Validators.required, Validators.minLength(8)]],
+    confirmPassword: ['', Validators.required]
+  });
 
   ngOnInit(): void {
     this.user = this.getStoredUser();
@@ -73,6 +84,66 @@ export class ProfileComponent implements OnInit {
         this.loadingCars = false;
       }
     });
+  }
+
+  changePassword() {
+    this.passwordSuccess = '';
+    this.passwordError = '';
+
+    if (this.passwordForm.invalid) {
+      this.passwordForm.markAllAsTouched();
+      this.passwordError = 'Preencha todos os campos. A nova senha precisa ter pelo menos 8 caracteres.';
+      return;
+    }
+
+    const { newPassword, confirmPassword } = this.passwordForm.value;
+    if (newPassword !== confirmPassword) {
+      this.passwordError = 'A confirmacao da nova senha nao confere.';
+      return;
+    }
+
+    this.changingPassword = true;
+    this.authService.changePassword(this.passwordForm.value).subscribe({
+      next: () => {
+        this.changingPassword = false;
+        this.passwordSuccess = 'Senha alterada com sucesso.';
+        this.passwordForm.reset();
+      },
+      error: (err) => {
+        console.error('Erro ao alterar senha:', err);
+        this.changingPassword = false;
+        this.passwordError = this.getPasswordErrorMessage(err);
+      }
+    });
+  }
+
+  private getPasswordErrorMessage(err: any): string {
+    if (typeof err?.error === 'string' && err.error.trim()) {
+      try {
+        const parsedError = JSON.parse(err.error);
+        return parsedError.message || parsedError.error || err.error;
+      } catch {
+        return err.error;
+      }
+    }
+
+    if (err?.error?.message) {
+      return err.error.message;
+    }
+
+    if (err?.status === 0) {
+      return 'Nao foi possivel conectar com a API. Confira se o backend esta rodando em http://localhost:8080.';
+    }
+
+    if (err?.status === 401 || err?.status === 403) {
+      return 'Sua sessao expirou ou o token nao foi enviado. Faca login novamente e tente outra vez.';
+    }
+
+    if (err?.status === 404) {
+      return 'Rota de alteracao de senha nao encontrada. Reinicie o backend para carregar o endpoint novo.';
+    }
+
+    return `Nao foi possivel alterar a senha. Status: ${err?.status || 'desconhecido'}.`;
   }
 
   private setUser(user: any) {

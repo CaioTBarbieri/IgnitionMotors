@@ -1,11 +1,11 @@
 <div class="dashboard-container">
-
   <header class="navbar">
     <div class="logo">
       <h1>Ignition<span>Motors</span></h1>
     </div>
+
     <div class="nav-actions">
-      <button class="btn-primary" routerLink="/add-car">+ Anunciar Máquina</button>
+      <button class="btn-primary" routerLink="/add-car">+ Anunciar Maquina</button>
 
       <div class="profile-menu" (click)="$event.stopPropagation()">
         <button
@@ -30,46 +30,120 @@
 
   <section class="hero">
     <div class="hero-inner">
-      <h2>Vitrine de Veículos</h2>
+      <h2>Vitrine de Veiculos</h2>
       <p>Confira o estoque atualizado em tempo real.</p>
 
       <div class="search-area">
-        <input type="text" placeholder="Pesquise por marca ou modelo..." (input)="onSearch($event)">
+        <input
+          type="text"
+          placeholder="Pesquise por marca ou modelo..."
+          [value]="searchTerm"
+          (input)="onSearch($event)"
+        >
       </div>
     </div>
   </section>
 
   <main class="content">
-
-    <div class="empty-state" *ngIf="filteredCars.length === 0">
-      <p>Nenhum veículo encontrado.</p>
-      <span>Tente buscar por outra marca ou modelo.</span>
-    </div>
-
-    <div class="car-grid" *ngIf="filteredCars.length > 0">
-      <div class="car-card" *ngFor="let car of filteredCars" [routerLink]="['/car', car.id]">
-
-        <div class="car-image">
-         <img *ngIf="car.imageUrls && car.imageUrls.length > 0" [src]="car.imageUrls[0]" [alt]="car.model" class="vehicle-photo">
-         <span *ngIf="!car.imageUrls || car.imageUrls.length === 0">{{ car.brand }}</span>
+    <aside class="filters-panel" [class.collapsed]="!filtersOpen">
+      <div class="filters-header">
+        <div>
+          <span class="eyebrow">Filtros</span>
+          <h3>Refine sua busca</h3>
         </div>
 
-        <div class="car-info">
-          <h3>{{ car.brand }} {{ car.model }}</h3>
-          <p class="year">{{ car.year }}</p>
-          <p class="price">{{ car.price | currency:'BRL':'symbol':'1.0-0' }}</p>
+        <button type="button" class="icon-button" (click)="toggleFilters()" aria-label="Abrir ou fechar filtros">
+          {{ filtersOpen ? '-' : '+' }}
+        </button>
+      </div>
 
-          <div class="specs">
-            <span class="spec-badge">⚙️ {{ car.engine }}</span>
-            <span class="spec-badge">🐎 {{ car.horsepower }} cv</span>
-            <span class="spec-badge">🛣️ {{ car.km | number }} km</span>
-            <span class="spec-badge">⏱️ 0-100: {{ car.zeroToHundred }}s</span>
+      <div class="filters-body" *ngIf="filtersOpen">
+        <div class="applied-row">
+          <span>{{ activeFilterCount }} aplicados</span>
+          <button type="button" (click)="clearFilters()" [disabled]="activeFilterCount === 0">Limpar</button>
+        </div>
+
+        <label class="filter-field">
+          <span>Marca</span>
+          <select [(ngModel)]="filters.brand" (ngModelChange)="applyFilters()">
+            <option value="">Todas as marcas</option>
+            <option *ngFor="let brand of brands" [value]="brand">{{ brand }}</option>
+          </select>
+        </label>
+
+        <div class="filter-group">
+          <span>Ano</span>
+          <div class="field-grid">
+            <input type="number" placeholder="Min." [(ngModel)]="filters.minYear" (ngModelChange)="applyFilters()">
+            <input type="number" placeholder="Max." [(ngModel)]="filters.maxYear" (ngModelChange)="applyFilters()">
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span>Preco</span>
+          <div class="field-grid">
+            <input type="number" placeholder="Min." [(ngModel)]="filters.minPrice" (ngModelChange)="applyFilters()">
+            <input type="number" placeholder="Max." [(ngModel)]="filters.maxPrice" (ngModelChange)="applyFilters()">
+          </div>
+        </div>
+
+        <label class="filter-field">
+          <span>Quilometragem ate</span>
+          <input type="number" placeholder="Ex: 50000" [(ngModel)]="filters.maxKm" (ngModelChange)="applyFilters()">
+        </label>
+
+        <label class="filter-field">
+          <span>Potencia minima</span>
+          <input type="number" placeholder="Ex: 150 cv" [(ngModel)]="filters.minHorsepower" (ngModelChange)="applyFilters()">
+        </label>
+      </div>
+    </aside>
+
+    <section class="results-area">
+      <div class="results-toolbar">
+        <strong>{{ resultLabel }}</strong>
+
+        <label class="sort-field">
+          <span>Ordenar por</span>
+          <select [(ngModel)]="filters.sortBy" (ngModelChange)="applyFilters()">
+            <option value="recent">Mais recentes</option>
+            <option value="priceAsc">Menor preco</option>
+            <option value="priceDesc">Maior preco</option>
+            <option value="yearDesc">Ano mais novo</option>
+            <option value="kmAsc">Menor km</option>
+            <option value="powerDesc">Mais potentes</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="empty-state" *ngIf="filteredCars.length === 0">
+        <p>Nenhum veiculo encontrado.</p>
+        <span>Tente ajustar os filtros ou buscar por outra marca.</span>
+      </div>
+
+      <div class="car-grid" *ngIf="filteredCars.length > 0">
+        <div class="car-card" *ngFor="let car of filteredCars" [routerLink]="['/car', car.id]">
+          <div class="car-image">
+            <img *ngIf="car.imageUrls && car.imageUrls.length > 0" [src]="car.imageUrls[0]" [alt]="car.model" class="vehicle-photo">
+            <span *ngIf="!car.imageUrls || car.imageUrls.length === 0">{{ car.brand }}</span>
           </div>
 
-          <button class="btn-details" [routerLink]="['/car', car.id]" (click)="$event.stopPropagation()">Saber mais →</button>
+          <div class="car-info">
+            <h3>{{ car.brand }} {{ car.model }}</h3>
+            <p class="year">{{ car.year }}</p>
+            <p class="price">{{ car.price | currency:'BRL':'symbol':'1.0-0' }}</p>
 
+            <div class="specs">
+              <span class="spec-badge">Motor {{ car.engine }}</span>
+              <span class="spec-badge">{{ car.horsepower }} cv</span>
+              <span class="spec-badge">{{ car.km | number }} km</span>
+              <span class="spec-badge">0-100: {{ car.zeroToHundred }}s</span>
+            </div>
+
+            <button class="btn-details" [routerLink]="['/car', car.id]" (click)="$event.stopPropagation()">Saber mais</button>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   </main>
 </div>

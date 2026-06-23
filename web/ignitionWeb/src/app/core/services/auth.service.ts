@@ -17,6 +17,10 @@ export class AuthService {
     return this.http.get(`${this.apiUrl}/me`);
   }
 
+  changePassword(passwordData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/change-password`, passwordData, { responseType: 'text' });
+  }
+
   register(userData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, userData);
   }

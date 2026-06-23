@@ -60,6 +60,44 @@
       </div>
     </section>
 
+    <section class="security-section">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Seguranca</p>
+          <h2>Alterar senha</h2>
+        </div>
+      </div>
+
+      <form class="password-form" [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+        <div class="form-row">
+          <div class="input-group">
+            <label>Senha atual</label>
+            <input type="password" formControlName="currentPassword" autocomplete="current-password">
+          </div>
+
+          <div class="input-group">
+            <label>Nova senha</label>
+            <input type="password" formControlName="newPassword" autocomplete="new-password">
+          </div>
+
+          <div class="input-group">
+            <label>Confirmar nova senha</label>
+            <input type="password" formControlName="confirmPassword" autocomplete="new-password">
+          </div>
+        </div>
+
+        <p class="form-hint">Use no minimo 8 caracteres e uma senha diferente da atual.</p>
+        <p class="form-message success" *ngIf="passwordSuccess">{{ passwordSuccess }}</p>
+        <p class="form-message error" *ngIf="passwordError">{{ passwordError }}</p>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" [disabled]="changingPassword">
+            {{ changingPassword ? 'Alterando...' : 'Salvar nova senha' }}
+          </button>
+        </div>
+      </form>
+    </section>
+
     <section class="posts-section">
       <div class="section-header">
         <div>
