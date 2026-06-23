@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class CarService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/cars';
+  private apiUrl = 'https://ignitionmotors.onrender.com/cars';
 
   // Busca todos os carros para a vitrine
   getCars(): Observable<any[]> {
