@@ -41,7 +41,7 @@ public class Car {
 
     @ElementCollection
     @CollectionTable(name = "car_images", joinColumns = @JoinColumn(name = "car_id"))
-    @Column(name = "image_url", columnDefinition = "LONGTEXT")
+    @Column(name = "image_url", columnDefinition = "TEXT")
     @Lob
     private List<String> imageUrls = new java.util.ArrayList<>(); // Nova lista de imagens
 
