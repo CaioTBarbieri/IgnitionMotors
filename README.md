@@ -1,154 +1,168 @@
-# 🔥 IgnitionMotors
+# IgnitionMotors
 
-**IgnitionMotors** é uma aplicação web de marketplace de veículos, desenvolvida como projeto fullstack com Angular no frontend e Spring Boot no backend. A plataforma permite que usuários anunciem, pesquisem e visualizem veículos à venda de forma intuitiva e moderna.
+IgnitionMotors e uma aplicacao web fullstack para anuncios de veiculos. O projeto funciona como uma vitrine onde usuarios podem cadastrar, pesquisar, filtrar, visualizar, editar e excluir seus proprios anuncios.
 
----
-
-## 📋 Índice
-
-- [Sobre o Projeto](#sobre-o-projeto)
-- [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Pré-requisitos](#pré-requisitos)
-- [Como Executar](#como-executar)
-- [Funcionalidades](#funcionalidades)
-- [Contribuição](#contribuição)
-
----
-
-## Sobre o Projeto
-
-O IgnitionMotors nasceu como um projeto acadêmico de Análise e Desenvolvimento de Sistemas, com o objetivo de simular um marketplace real de compra e venda de veículos. A aplicação conta com uma interface responsiva e um backend RESTful com persistência em banco de dados relacional.
-
----
-
-## Tecnologias Utilizadas
+## Tecnologias
 
 ### Frontend
-- [Angular](https://angular.io/) — Framework SPA para construção da interface
+
+- Angular
 - TypeScript
-- SCSS — Estilização modular e responsiva
-- HTML5
+- SCSS
+- Vercel para deploy
 
 ### Backend
-- [Java](https://www.java.com/) com [Spring Boot](https://spring.io/projects/spring-boot) — API REST
-- Spring Data JPA — Camada de persistência
-- Spring Web MVC — Controladores REST
-- [MySQL](https://www.mysql.com/) — Banco de dados relacional
 
----
+- Java 21
+- Spring Boot
+- Spring Security com JWT
+- Spring Data JPA
+- PostgreSQL
+- Docker
+- Render para deploy
 
-## Estrutura do Projeto
+## Estrutura
 
-```
+```txt
 IgnitionMotors/
-├── api/                  # Backend Spring Boot
-│   └── src/
-│       ├── main/
-│       │   ├── java/     # Código-fonte Java (controllers, services, repositories)
-│       │   └── resources/
-│       │       └── application.properties
-│       └── test/
-│
-└── web/
-    └── ignitionWeb/      # Frontend Angular
-        ├── src/
-        │   ├── app/      # Componentes, serviços e módulos
-        │   ├── assets/
-        │   └── environments/
-        ├── angular.json
-        └── package.json
+  api/                 # Backend Spring Boot
+    Dockerfile
+    pom.xml
+    src/
+
+  web/
+    ignitionWeb/       # Frontend Angular
+      package.json
+      angular.json
+      src/
 ```
 
----
+## Deploy
 
-## Pré-requisitos
+### Frontend
 
-Certifique-se de ter instalado em sua máquina:
+O frontend esta publicado na Vercel.
 
-- [Node.js](https://nodejs.org/) (v18+) e npm
-- [Angular CLI](https://angular.io/cli) (`npm install -g @angular/cli`)
-- [Java JDK](https://adoptium.net/) (17+)
-- [Maven](https://maven.apache.org/)
-- [MySQL](https://www.mysql.com/) (v8+)
-
----
-
-## Como Executar
-
-### 1. Clonar o repositório
-
-```bash
-git clone https://github.com/CaioTBarbieri/IgnitionMotors.git
-cd IgnitionMotors
+```txt
+Root Directory: web/ignitionWeb
+Build Command: npm run build
+Output Directory: dist/ignition-web/browser
 ```
 
-### 2. Configurar o banco de dados
+### Backend
 
-Crie o banco de dados no MySQL:
+O backend esta preparado para deploy no Render usando Docker.
 
-```sql
-CREATE DATABASE ignitionmotors;
+```txt
+Root Directory: api
+Runtime: Docker
 ```
 
-Edite o arquivo `api/src/main/resources/application.properties` com suas credenciais:
+O Render usa o arquivo:
 
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/ignitionmotors
-spring.datasource.username=seu_usuario
-spring.datasource.password=sua_senha
-spring.jpa.hibernate.ddl-auto=update
+```txt
+api/Dockerfile
 ```
 
-### 3. Executar o Backend
+### Banco de dados
+
+O banco usado em producao e PostgreSQL no Render.
+
+Variaveis de ambiente necessarias no servico da API:
+
+```txt
+SPRING_DATASOURCE_URL=jdbc:postgresql://HOST:PORT/DATABASE?sslmode=require
+SPRING_DATASOURCE_USERNAME=usuario
+SPRING_DATASOURCE_PASSWORD=senha
+JWT_SECRET=chave-secreta-para-token-jwt
+CORS_ALLOWED_ORIGINS=http://localhost:4200,https://seu-front.vercel.app
+```
+
+## Rodando localmente
+
+### Pre-requisitos
+
+- Node.js e npm
+- Java 21
+- Maven
+- PostgreSQL
+
+### Backend
+
+Crie um banco PostgreSQL local chamado `ignitionmotors` ou configure as variaveis de ambiente para apontar para outro banco.
+
+Valores padrao usados localmente:
+
+```txt
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/ignitionmotors
+SPRING_DATASOURCE_USERNAME=postgres
+SPRING_DATASOURCE_PASSWORD=postgres
+JWT_SECRET=minha-chave-secreta-e-super-segura-do-ignition-motors
+CORS_ALLOWED_ORIGINS=http://localhost:4200
+```
+
+Para iniciar a API:
 
 ```bash
 cd api
 mvn spring-boot:run
 ```
 
-> A API estará disponível em: `http://localhost:8080`
+A API ficara disponivel em:
 
-### 4. Executar o Frontend
+```txt
+http://localhost:8080
+```
+
+### Frontend
 
 ```bash
 cd web/ignitionWeb
 npm install
-ng serve
+npm start
 ```
 
-> A aplicação estará disponível em: `http://localhost:4200`
+O frontend ficara disponivel em:
 
----
+```txt
+http://localhost:4200
+```
+
+## Docker
+
+Para gerar a imagem Docker da API:
+
+```bash
+cd api
+docker build -t ignitionmotors-api .
+```
+
+Para rodar a imagem, informe as variaveis de ambiente:
+
+```bash
+docker run -p 8080:8080 \
+  -e SPRING_DATASOURCE_URL="jdbc:postgresql://host.docker.internal:5432/ignitionmotors" \
+  -e SPRING_DATASOURCE_USERNAME="postgres" \
+  -e SPRING_DATASOURCE_PASSWORD="postgres" \
+  -e JWT_SECRET="minha-chave-local" \
+  -e CORS_ALLOWED_ORIGINS="http://localhost:4200" \
+  ignitionmotors-api
+```
 
 ## Funcionalidades
 
-- 🚗 Listagem de veículos disponíveis
-- 🔍 Busca e filtragem de anúncios
-- 📄 Visualização detalhada de cada veículo
-- 📝 Cadastro de novos anúncios
-- 🎨 Interface responsiva com design moderno
-
----
-
-## Contribuição
-
-Contribuições são bem-vindas! Para contribuir:
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/minha-feature`)
-3. Commit suas alterações (`git commit -m 'feat: adiciona minha feature'`)
-4. Push para a branch (`git push origin feature/minha-feature`)
-5. Abra um Pull Request
-
----
+- Cadastro e login de usuarios
+- Autenticacao com JWT
+- Listagem de veiculos
+- Busca por marca e modelo
+- Filtros por marca, ano, preco, quilometragem e potencia
+- Cadastro de anuncios com imagens
+- Edicao e exclusao apenas pelo criador do anuncio
+- Perfil com informacoes do usuario e suas postagens
+- Alteracao de senha pelo perfil
 
 ## Autor
 
-**Caio Barbieri**  
-Estudante de Análise e Desenvolvimento de Sistemas  
-[GitHub](https://github.com/CaioTBarbieri)
+Caio Barbieri
 
----
-
-> Projeto desenvolvido para fins acadêmicos.
+Projeto desenvolvido para fins academicos.
